@@ -7,4 +7,4 @@ Different Features(learned & added):
 -Added a feature to import and display images on the screen of the app
 -Added a feature to share the image to other people
 -Implemented a feature to switch between screens through a button
-
+-Implemented a feature to switch between screens through various buttons that allow you to manouver between 'detail' screens and 'home' screens with ease
