@@ -1,5 +1,4 @@
 /*
-these are all the things I need to install to get all the features I learned in the tutorial to work
 expo install expo-image-picker
 expo install expo-sharing
 expo install anonymous-files
@@ -21,59 +20,225 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-These imports above weren't working when I tried using different tab code so I just saved them here for later
 */
 
+import 'react-native-gesture-handler';
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Button,StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 
-function HomeScreen() {
+
+//Details
+function MoreDetailsScreen({navigation}){
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the More Detail Screen!</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
     </View>
-  );
+  ); 
 }
-
+function FunFactsScreen({navigation}){
+  return(
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Fun Fact Screen!</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
+    </View>
+  )
+}
+function DetailScreen({navigation}){
+  return(
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Detail!</Text>
+      <Button title="Go to More Details" onPress={() => navigation.navigate('More Details')} />
+      <Button title="Go to Fun Facts" onPress={() => navigation.navigate('Fun Facts')} />
+    </View>
+  )
+}
 function DetailsScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Details!</Text>
-    </View>
+      <Stack.Navigator initialRouteName="Details">
+        <Stack.Screen name="Detail Screen" component={DetailScreen}options={{title: 'Detail Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+        <Stack.Screen name="Fun Facts" component={FunFactsScreen}options={{title: 'Fun Facts',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+        <Stack.Screen name="More Details" component={MoreDetailsScreen}options={{headerRight: () => (<Button onPress={() => alert('This is a button!')}title="Info"color="#fff"/>),title: 'More Details Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+      </Stack.Navigator>
   );
 }
 
-function ImageShareScreen() {
+
+
+//Share
+function ImageSharingScreen({navigation}) {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Share an Image!</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Image Sharing Screen!</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
     </View>
+  ); 
+}
+function TextSharingScreen({navigation}) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Text Sharing Screen!</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
+    </View>
+  ); 
+}
+function SharingScreen({navigation}) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Sharing Screen!</Text>
+      <Button onPress={() => navigation.navigate("Image Sharing")} title="Image Sharing" />
+      <Button onPress={() => navigation.navigate("Text Sharing")} title="Text Sharing" />
+    </View>
+  ); 
+}
+function ShareScreen() {
+  return (
+    <Stack.Navigator initialRouteName="Details">
+      <Stack.Screen name="Sharing" component={SharingScreen}options={{title: 'Share',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+      <Stack.Screen name="Image Sharing" component={ImageSharingScreen}options={{title: 'Image Share',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+      <Stack.Screen name="Text Sharing" component={TextSharingScreen}options={{title: 'Text Share',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+    </Stack.Navigator>
   );
 }
 
+
+//Settings
+function AccountScreen({navigation}){
+  return(
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Account Screen!</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
+    </View>
+  )
+}
+function PrivacyScreen({navigation}){
+  return(
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Privacy Screen!</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
+    </View>
+  )
+}
+function NotificationScreen({navigation}){
+  return(
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Notification Screen!</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
+    </View>
+  )
+}
+function HelpScreen({navigation}){
+  return(
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Help Screen!</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
+    </View>
+  )
+}
+function SettingScreen({navigation}){
+  return(
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>This is the Settings Screen!</Text>
+      <Button onPress={() => navigation.navigate("Account")} title="Account" />
+      <Button onPress={() => navigation.navigate("Privacy")} title="Privacy" />
+      <Button onPress={() => navigation.navigate("Notifications")} title="Notifications" />
+      <Button onPress={() => navigation.navigate("Help")} title="Help" />
+    </View>
+  )
+}
 function SettingsScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
-    </View>
+      <Stack.Navigator initialRouteName="Settings">
+        <Stack.Screen name="Settings" component={SettingScreen}options={{title: 'Settings Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+        <Stack.Screen name="Account" component={AccountScreen}options={{title: 'Account Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+        <Stack.Screen name="Privacy" component={PrivacyScreen}options={{title: 'Privacy Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+        <Stack.Screen name="Notifications" component={NotificationScreen}options={{title: 'Notifications Screen',headerStyle:  {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+        <Stack.Screen name="Help" component={HelpScreen}options={{title: 'Help Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+      </Stack.Navigator>
   );
 }
 
-const Tab = createBottomTabNavigator();
+function ForYouScreen({navigation}){
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>For You</Text>
+      <Button onPress={() => navigation.goBack()} title="Go Back" />
+    </View>
+  ); 
+}
+function FeedsScreen({navigation}){
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 20 }}>Feed</Text>
+      <Button onPress={() => navigation.navigate("For You")} title="For You" />
+    </View>
+  ); 
+}
+function FeedScreen() {
+  return (
+    <Stack.Navigator initialRouteName="Details">
+      <Stack.Screen name="Feed Screen" component={FeedsScreen}options={{title: 'Feed Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+      <Stack.Screen name="For You" component={ForYouScreen}options={{title: 'For You',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+    </Stack.Navigator>
+  );
+}
+function HomeScreen() {
+  return (
+      <Tab.Navigator initialRouteName="Feed">
+        <Tab.Screen name="Feed" component={FeedScreen} />
+        <Tab.Screen name="Details" component={DetailsScreen} />
+        <Tab.Screen name="Share" component={ShareScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
+  );
+}
 
+
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+function Home({navigation}){
+  return (
+    <View style={styles.container}>
+      <Text style={{ fontSize: 50 }}>Home</Text>
+      <Button onPress={() => navigation.navigate("Home Screen")} title="Enter app" />
+    </View>
+  ); 
+}
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Details" component={DetailsScreen} />
-        <Tab.Screen name="Image Share" component={ImageShareScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-      </Tab.Navigator>
+      <Stack.Navigator screenOptions={{headerShown: false,}}>
+        <Stack.Screen name="Home" component={Home}/>
+        <Stack.Screen name="Home Screen" component={HomeScreen}/>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+var colors=['#C0392B','#E67E22','#EFEE00','#27AE60','#3498DB','#D6EAF8','#8E44AD']
+function getRandom(min, max) {
+  return Math.random() * (max - min) + min;
+}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    backgroundColor: "blue",
+    padding: 100,
+    borderRadius: 50,
+  },
+  buttonText: {
+    fontSize: 50,
+    color: '#fff',
+  }, 
+});
+
+
 
