@@ -1,12 +1,17 @@
 /*
-expo install expo-image-picker
-expo install expo-sharing
-expo install anonymous-files
-npm install @react-navigation/native
+expo install expo-image-picker -> Pick an image
+expo install expo-sharing -> Sharing stuff(ex. images)
+expo install anonymous-files 
+npm install @react-navigation/native -> Navigation
 expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
 npm install react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view
 npm install @react-navigation/stack
 npm install @react-navigation/native @react-navigation/compat @react-navigation/stack
+expo install react-native-maps -> expomapview
+expo build:android -> export apk -> create keystone
+expo fetch:android:hashes -> Gets your certificate fingerprint for google api
+expo credentials:manager -> Create keystone
+
 
 import { StatusBar } from 'expo-status-bar';
 import {Image, Platform, StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native'; 
@@ -24,10 +29,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import { Text, View, Button,StyleSheet } from 'react-native';
+import { Text, View, Button,StyleSheet,Dimensions  } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import MapView from 'react-native-maps';
 
 
 //Details
@@ -49,11 +55,16 @@ function FunFactsScreen({navigation}){
 }
 function DetailScreen({navigation}){
   return(
+    <View style={mapstyles.container}>
+      <MapView style={mapstyles.map} />
+    </View>
+    /*
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Detail!</Text>
       <Button title="Go to More Details" onPress={() => navigation.navigate('More Details')} />
       <Button title="Go to Fun Facts" onPress={() => navigation.navigate('Fun Facts')} />
     </View>
+    */
   )
 }
 function DetailsScreen() {
@@ -240,5 +251,16 @@ const styles = StyleSheet.create({
   }, 
 });
 
-
+const mapstyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+});
 
