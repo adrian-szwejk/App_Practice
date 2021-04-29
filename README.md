@@ -23,7 +23,7 @@ _Working On:_<br/>
 -Adding a social tab to discuss the issues around the world with trash and possible events being held<br/>
 -Add markers around your location with different places with trash that could be collected and thrown out<br/>
 -Add a view feature for the user to see a picture/description of the location they are going to.<br/>
--Add a navigation feature to navigate the users to that location with real-time tracking like google maps<br/>
+-Add a navigation feature to navigate the users to that location with real-time tracking like google maps(Through google maps API)<br/>
 -Add a profile/settings tabs for the people<br/>
 -Allow people to make accounts and communicate w/ others<br/>
 -Allow people to place their own markers and for other to see them<br/>
