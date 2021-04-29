@@ -1,7 +1,6 @@
-/*
+
 import { Marker } from 'react-native-maps';
 import MapView from 'react-native-maps';
-import { Constants} from*/
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import * as React from 'react';
 import * as Permissions from 'expo-permissions';
@@ -18,13 +17,27 @@ export default class App extends React.Component{
     location:{},
     errorMessage: ''
   }
-
-  componentDidMount(){
+  
+  componentWillUnmount(){
+    const { width, height } = Dimensions.get('window')
+    const ASPECT_RATIO = width / height
     this._getLocation();
+    const lat =parseFloat(location.latitude)
+    const lng =parseFloat(location.long)
+    const latDelta = 0.025
+    const lngDelta = latDelta * ASPECT_RATIO
+    this.setState({
+      region: {
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: latDelta,
+        longitudeDelta: lngDelta
+      }
+    })   
   }
 
   _getLocation = async () => {
-    const {status} = await Permissions.askAsync(Permissions.location)
+    const {status} = await location.requestPermissionAsync()
 
     if(status != 'granted'){
       console.log('Permission not granted')
@@ -39,22 +52,40 @@ export default class App extends React.Component{
       location
     })
   }
-
   render(){
-    return(
+    return (
       <View style={styles.container}>
-        <Text> Open up App.js to start working on your app</Text>
+      <MapView style={styles.map} initialRegion={{latitude: lat,longitude: lng,latitudeDelta: latDelta,longitudeDelta: longDelta}}/>
       </View>
     );
   }
 }
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
   container:{
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   }
+});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#34495e',
+  },
 });
 
 
