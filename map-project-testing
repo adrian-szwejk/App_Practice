@@ -1,8 +1,81 @@
-
-import * as React from 'react';
-import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+/*
 import { Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
+import { Constants} from*/
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import * as React from 'react';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
+
+/*
+mapView.showsUserLocation = YES;
+[mapView setCenterCoordinate:mapView.userLocation.location.coordinate animated:YES];
+*/
+
+export default class App extends React.Component{
+
+  state = {
+    location:{},
+    errorMessage: ''
+  }
+
+  componentDidMount(){
+    this._getLocation();
+  }
+
+  _getLocation = async () => {
+    const {status} = await Permissions.askAsync(Permissions.location)
+
+    if(status != 'granted'){
+      console.log('Permission not granted')
+      this.setState({
+        errorMessage: 'Permission not granted'
+      })
+    }
+
+    const location = await Location.getCurrentPositionAsync();
+
+    this.setState({
+      location
+    })
+  }
+
+  render(){
+    return(
+      <View style={styles.container}>
+        <Text> Open up App.js to start working on your app</Text>
+      </View>
+    );
+  }
+}
+const styles = StyleSheet.create({
+  container:{
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+});
+
+
+/*
+_getLocationAsync = async () => {
+  let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  if (status !== 'granted') {
+    this.setState({
+      locationResult: 'Permission to access location was denied',
+    });
+  } else {
+    this.setState({ hasLocationPermissions: true });
+  }
+
+  let location = await Location.getCurrentPositionAsync({});
+  this.setState({ locationResult: JSON.stringify(location) });
+  
+  // Center the map on the location we just fetched.
+  this.setState({mapRegion: { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }});
+};
+
 
 function getInitialState() {
   return {
@@ -18,7 +91,6 @@ function getInitialState() {
 function onRegionChange(region) {
   this.setState({ region });
 }
-
 
 export default function App() {
   return (
@@ -47,3 +119,4 @@ const styles = StyleSheet.create({
     color: '#34495e',
   },
 });
+*/
