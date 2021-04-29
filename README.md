@@ -3,11 +3,11 @@ I am learning how to program an app that works on all devices
 
 
 **Different Features(learned & added):**
--implemented a feature to change the color and size of the text displayed on the app
--Added a feature to import and display images on the screen of the app
--Added a feature to share the image to other people
--Implemented a feature to switch between screens through a button
--Implemented a feature to switch between screens through various buttons that allow you to manouver between 'detail' screens and 'home' screens with ease
+-implemented a feature to change the color and size of the text displayed on the app<br/>
+-Added a feature to import and display images on the screen of the app<br/>
+-Added a feature to share the image to other people<br/>
+-Implemented a feature to switch between screens through a button<br/>
+-Implemented a feature to switch between screens through various buttons that allow you to manouver between 'detail' screens and 'home' screens with ease<br/>
 
 
 **Trash Collecting Project:**
