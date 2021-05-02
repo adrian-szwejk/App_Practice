@@ -1,4 +1,73 @@
+import React, { useState, useEffect } from 'react';
+import { Platform, Text, View, StyleSheet } from 'react-native';
+import Constants from 'expo-constants';
+import * as Location from 'expo-location';
 
+export default function App() {
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS === 'android' && !Constants.isDevice) {
+        setErrorMsg(
+          'Oops, this will not work on Snack in an Android emulator. Try it on your device!'
+        );
+        return;
+      }
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+  //creates array to split the text by commas
+  var arr = new Array();
+  arr=text.split(",");
+  //creates dictionary that sorts keys by the separation of colons 
+  var dict={};
+  for(var x=0; x<arr.length;x++){
+    var arrs = new Array();
+    arrs=arr[x].split(":");
+    dict[arrs[0]]=arrs[1]
+  }
+  
+  return (
+    <View style={styles.container}>
+      <Text style={styles.paragraph}>{"Latitude:"+parseFloat(dict['"latitude"'])+"\nLongitude:"+parseFloat(dict['"longitude"'])+"\n"+text}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  paragraph: {
+    fontSize: 18,
+    textAlign: 'center',
+  },
+});
+
+
+
+
+
+/*
 import { Marker } from 'react-native-maps';
 import MapView from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
@@ -6,10 +75,6 @@ import * as React from 'react';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 
-/*
-mapView.showsUserLocation = YES;
-[mapView setCenterCoordinate:mapView.userLocation.location.coordinate animated:YES];
-*/
 
 export default class App extends React.Component{
 
@@ -19,25 +84,11 @@ export default class App extends React.Component{
   }
   
   componentWillUnmount(){
-    const { width, height } = Dimensions.get('window')
-    const ASPECT_RATIO = width / height
-    this._getLocation();
-    const lat =parseFloat(location.latitude)
-    const lng =parseFloat(location.long)
-    const latDelta = 0.025
-    const lngDelta = latDelta * ASPECT_RATIO
-    this.setState({
-      region: {
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: latDelta,
-        longitudeDelta: lngDelta
-      }
-    })   
+    this._getLocation();  
   }
 
   _getLocation = async () => {
-    const {status} = await location.requestPermissionAsync()
+    const {status} = await location.requestPermissionsAsync()
 
     if(status != 'granted'){
       console.log('Permission not granted')
@@ -54,84 +105,14 @@ export default class App extends React.Component{
   }
   render(){
     return (
-      <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={{latitude: lat,longitude: lng,latitudeDelta: latDelta,longitudeDelta: longDelta}}/>
+      <View style={style.container}>
+      <MapView style={style.map} initialRegion={{latitude: this.state.location.latitude,longitude: this.state.longitude,latitudeDelta: this.state.latitudeDelta,longitudeDelta: this.state.longitudeDelta}}/>
       </View>
     );
   }
 }
+
 const style = StyleSheet.create({
-  container:{
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-});
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-  paragraph: {
-    margin: 24,
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#34495e',
-  },
-});
-
-
-/*
-_getLocationAsync = async () => {
-  let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  if (status !== 'granted') {
-    this.setState({
-      locationResult: 'Permission to access location was denied',
-    });
-  } else {
-    this.setState({ hasLocationPermissions: true });
-  }
-
-  let location = await Location.getCurrentPositionAsync({});
-  this.setState({ locationResult: JSON.stringify(location) });
-  
-  // Center the map on the location we just fetched.
-  this.setState({mapRegion: { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }});
-};
-
-
-function getInitialState() {
-  return {
-    region: {
-      latitude: 37.78825,
-      longitude: -122.4324,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    },
-  };
-}
-
-function onRegionChange(region) {
-  this.setState({ region });
-}
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-    <MapView style={styles.map} initialRegion={{latitude: 41.9,longitude: 87.65,latitudeDelta: 0.04,longitudeDelta: 0.05}}/>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
