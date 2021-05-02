@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Platform, Text, View, StyleSheet } from 'react-native';
-import Constants from 'expo-constants';
+import { Platform, Text, View, StyleSheet,Dimensions } from 'react-native';
+import Constants from 'expo-constants'; 
 import * as Location from 'expo-location';
+import MapView from 'react-native-maps';
 
 export default function App() {
   const [location, setLocation] = useState(null);
@@ -32,10 +33,9 @@ export default function App() {
   } else if (location) {
     text = JSON.stringify(location);
   }
-  //creates array to split the text by commas
+
   var arr = new Array();
   arr=text.split(",");
-  //creates dictionary that sorts keys by the separation of colons 
   var dict={};
   for(var x=0; x<arr.length;x++){
     var arrs = new Array();
@@ -44,11 +44,13 @@ export default function App() {
   }
   
   return (
-    <View style={styles.container}>
-      <Text style={styles.paragraph}>{"Latitude:"+parseFloat(dict['"latitude"'])+"\nLongitude:"+parseFloat(dict['"longitude"'])+"\n"+text}</Text>
+    <View style={mapstyles.container}>
+      <MapView style={mapstyles.map} initialRegion={{latitude:parseFloat(dict['"latitude"']),longitude:parseFloat(dict['"longitude"']),latitudeDelta: 0.1,longitudeDelta: 0.1}}/>
     </View>
   );
 }
+//<Text style={styles.paragraph}>{"Latitude: "+parseFloat(dict['"latitude"'])+"\nLongitude: "+parseFloat(dict['"longitude"'])+"\n"+text}</Text>
+//<MapView style={styles.map} initialRegion={{latitude:parseFloat(dict['"latitude"']),longitude:parseFloat(dict['"longitude"']),latitudeDelta: 0.1,longitudeDelta: 0.1}}/>
 
 const styles = StyleSheet.create({
   container: {
@@ -62,9 +64,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-
-
+const mapstyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+});
 
 
 /*
