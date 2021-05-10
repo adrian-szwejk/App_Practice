@@ -1,78 +1,105 @@
-/*
-expo install expo-image-picker -> Pick an image
-expo install expo-sharing -> Sharing stuff(ex. images)
-expo install anonymous-files 
-npm install @react-navigation/native -> Navigation
-expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
-npm install react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view
-npm install @react-navigation/stack
-npm install @react-navigation/native @react-navigation/compat @react-navigation/stack
-expo install react-native-maps -> expomapview
-expo build:android -> export apk -> create keystone
-expo fetch:android:hashes -> Gets your certificate fingerprint for google api
-expo credentials:manager -> Create keystone
 
-
-import { StatusBar } from 'expo-status-bar';
-import {Image, Platform, StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native'; 
-import * as ImagePicker from 'expo-image-picker'
-import * as Sharing from 'expo-sharing';
-import uploadToAnonymousFilesAsync from 'anonymous-files';
-
-import React from 'react';
-import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { useFocusEffect } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-*/
 
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import { Text, View, Button,StyleSheet,Dimensions  } from 'react-native';
+import { useState, useEffect,useRef } from 'react';
+import { Platform, Text, View, Button,StyleSheet,Dimensions,Image,TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapView from 'react-native-maps';
+import Constants from 'expo-constants'; 
+import * as Location from 'expo-location';
+import { Marker } from "react-native-maps";
+import * as ImagePicker from 'expo-image-picker';
+import * as Sharing from 'expo-sharing'; 
 
 
-//Details
-function MoreDetailsScreen({navigation}){
+
+//Map screen
+function MapScreens(){
+  const [location, setLocation] = useState({
+    latitude: 51.5078788,
+    longitude: -0.0877321,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005
+  });
+  const [marker, setMarker] = useState({
+    latitude: 42.1635296,
+    longitude: -87.8809898,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005
+  });
+  const [errorMsg, setErrorMsg] = useState(null);
+  let mapRef = useRef(null);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS === 'android' && !Constants.isDevice) {
+        setErrorMsg(
+          'Oops, this will not work on Snack in an Android emulator. Try it on your device!'
+        );
+        return;
+      }
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+  
+
+  var arr = new Array();
+  arr=text.split(",");
+  var dict={};
+  for(var x=0; x<arr.length;x++){
+    var arrs = new Array();
+    arrs=arr[x].split(":");
+    dict[arrs[0]]=arrs[1]
+  }
+  var lat=parseFloat(dict['"latitude"'])
+  var lng=parseFloat(dict['"longitude"'])
+  var lati=parseFloat(42.2635296)
+  var long=parseFloat(-87.9809898)
+  var truth
+  if(parseFloat(lati.toFixed(5))==parseFloat(lat.toFixed(5))){
+    truth=true
+    lati=parseFloat(lat.toFixed(5))
+  }
+  else{
+    truth =false
+    
+  }
+  if(parseFloat(long.toFixed(5))==parseFloat(lng.toFixed(5))){
+    truth=true
+    long=parseFloat(lng.toFixed(5))
+  }
+  else{
+    truth =false
+    
+  }
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the More Detail Screen!</Text>
-      <Button onPress={() => navigation.goBack()} title="Go Back" />
-    </View>
-  ); 
-}
-function FunFactsScreen({navigation}){
-  return(
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Fun Fact Screen!</Text>
-      <Button onPress={() => navigation.goBack()} title="Go Back" />
-    </View>
-  )
-}
-function DetailScreen({navigation}){
-  return(
     <View style={mapstyles.container}>
-      <MapView style={mapstyles.map} />
+      <MapView style={mapstyles.map} showsUserLocation={true} followsUserLocation={true} showsCompass={true} initialRegion={{latitude:Number(lati),longitude:Number(long),latitudeDelta: 0.005,longitudeDelta: 0.005}}/>
+      <MapView.Marker coordinate={{latitude:42.3635296,longitude:-87.8809898,latitudeDelta: 0.005,longitudeDelta: 0.005}} />
     </View>
-    /*
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Detail!</Text>
-      <Button title="Go to More Details" onPress={() => navigation.navigate('More Details')} />
-      <Button title="Go to Fun Facts" onPress={() => navigation.navigate('Fun Facts')} />
-    </View>
-    */
-  )
+  );
 }
-function DetailsScreen() {
+function MapScreen() {
   return (
-      <Stack.Navigator initialRouteName="Details">
-        <Stack.Screen name="Detail Screen" component={DetailScreen}options={{title: 'Detail Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
-        <Stack.Screen name="Fun Facts" component={FunFactsScreen}options={{title: 'Fun Facts',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
-        <Stack.Screen name="More Details" component={MoreDetailsScreen}options={{headerRight: () => (<Button onPress={() => alert('This is a button!')}title="Info"color="#fff"/>),title: 'More Details Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+      <Stack.Navigator initialRouteName="MapScreens">
+        <Stack.Screen name="Map" component={MapScreens}options={{title: 'Map',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
       </Stack.Navigator>
   );
 }
@@ -81,17 +108,51 @@ function DetailsScreen() {
 
 //Share
 function ImageSharingScreen({navigation}) {
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  let openImagePickerAsync = async () => {
+    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    console.log(pickerResult);
+
+    setSelectedImage({ localUri: pickerResult.uri });
+  };
+  let openShareDialogAsync = async () => {
+    if (!(await Sharing.isAvailableAsync())) {
+      alert(`Uh oh, sharing isn't available on your platform`);
+      return;
+    }
+
+    await Sharing.shareAsync(selectedImage.localUri);
+  }; 
+  if (selectedImage !== null) {
+    return (
+      <View style={styles.container}>
+        <Image source={{ uri: selectedImage.localUri }} style={styles.thumbnail} />
+        <TouchableOpacity onPress={openShareDialogAsync} style={styles.button}>
+          <Text style={styles.buttonText}>Share this photo</Text>
+        </TouchableOpacity>
+        <Button onPress={() => navigation.goBack()} title="Go Back" />
+        </View>
+    );
+  }
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Image Sharing Screen!</Text>
+      <TouchableOpacity onPress={openImagePickerAsync} style={styles.button}>
+        <Text style={styles.buttonText}>Pick a photo</Text>
+      </TouchableOpacity>
       <Button onPress={() => navigation.goBack()} title="Go Back" />
     </View>
   ); 
 }
-function TextSharingScreen({navigation}) {
+function LocationSharingScreen({navigation}) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Text Sharing Screen!</Text>
       <Button onPress={() => navigation.goBack()} title="Go Back" />
     </View>
   ); 
@@ -99,9 +160,8 @@ function TextSharingScreen({navigation}) {
 function SharingScreen({navigation}) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Sharing Screen!</Text>
       <Button onPress={() => navigation.navigate("Image Sharing")} title="Image Sharing" />
-      <Button onPress={() => navigation.navigate("Text Sharing")} title="Text Sharing" />
+      <Button onPress={() => navigation.navigate("Location Sharing")} title="Location Sharing" />
     </View>
   ); 
 }
@@ -110,7 +170,7 @@ function ShareScreen() {
     <Stack.Navigator initialRouteName="Details">
       <Stack.Screen name="Sharing" component={SharingScreen}options={{title: 'Share',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
       <Stack.Screen name="Image Sharing" component={ImageSharingScreen}options={{title: 'Image Share',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
-      <Stack.Screen name="Text Sharing" component={TextSharingScreen}options={{title: 'Text Share',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
+      <Stack.Screen name="Location Sharing" component={LocationSharingScreen}options={{title: 'Location Share',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
     </Stack.Navigator>
   );
 }
@@ -120,7 +180,6 @@ function ShareScreen() {
 function AccountScreen({navigation}){
   return(
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Account Screen!</Text>
       <Button onPress={() => navigation.goBack()} title="Go Back" />
     </View>
   )
@@ -128,7 +187,6 @@ function AccountScreen({navigation}){
 function PrivacyScreen({navigation}){
   return(
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Privacy Screen!</Text>
       <Button onPress={() => navigation.goBack()} title="Go Back" />
     </View>
   )
@@ -136,7 +194,6 @@ function PrivacyScreen({navigation}){
 function NotificationScreen({navigation}){
   return(
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Notification Screen!</Text>
       <Button onPress={() => navigation.goBack()} title="Go Back" />
     </View>
   )
@@ -144,7 +201,6 @@ function NotificationScreen({navigation}){
 function HelpScreen({navigation}){
   return(
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Help Screen!</Text>
       <Button onPress={() => navigation.goBack()} title="Go Back" />
     </View>
   )
@@ -152,7 +208,6 @@ function HelpScreen({navigation}){
 function SettingScreen({navigation}){
   return(
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>This is the Settings Screen!</Text>
       <Button onPress={() => navigation.navigate("Account")} title="Account" />
       <Button onPress={() => navigation.navigate("Privacy")} title="Privacy" />
       <Button onPress={() => navigation.navigate("Notifications")} title="Notifications" />
@@ -172,19 +227,12 @@ function SettingsScreen() {
   );
 }
 
-function ForYouScreen({navigation}){
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>For You</Text>
-      <Button onPress={() => navigation.goBack()} title="Go Back" />
-    </View>
-  ); 
-}
+
+//Feed screen
 function FeedsScreen({navigation}){
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20 }}>Feed</Text>
-      <Button onPress={() => navigation.navigate("For You")} title="For You" />
+      <Text style={{ fontSize: 50 }}>Feed</Text>
     </View>
   ); 
 }
@@ -192,7 +240,6 @@ function FeedScreen() {
   return (
     <Stack.Navigator initialRouteName="Details">
       <Stack.Screen name="Feed Screen" component={FeedsScreen}options={{title: 'Feed Screen',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
-      <Stack.Screen name="For You" component={ForYouScreen}options={{title: 'For You',headerStyle: {backgroundColor:'#0038FF'},headerTintColor: '#fff',headerTitleStyle: {fontWeight: 'bold',},}} />
     </Stack.Navigator>
   );
 }
@@ -200,14 +247,14 @@ function HomeScreen() {
   return (
       <Tab.Navigator initialRouteName="Feed">
         <Tab.Screen name="Feed" component={FeedScreen} />
-        <Tab.Screen name="Details" component={DetailsScreen} />
+        <Tab.Screen name="Map" component={MapScreen} />
         <Tab.Screen name="Share" component={ShareScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
       </Tab.Navigator>
   );
 }
 
-
+//Navigation/Home screen
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 function Home({navigation}){
@@ -242,11 +289,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "blue",
-    padding: 100,
-    borderRadius: 50,
+    padding: 10,
+    borderRadius: 20,
   },
   buttonText: {
-    fontSize: 50,
+    fontSize: 30,
     color: '#fff',
   }, 
 });
