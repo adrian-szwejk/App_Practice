@@ -18,10 +18,10 @@ _Done:_<br/>
 -Made a home screen that is show before entering the app<br/>
 -Added a global map feature into one of the tabs at the bottom of the app<br/>
 -You can look around at the different parts of the world with the names of all the locations/streets showing up on the map(Like google maps)<br/>
-_Working On:_<br/>
 -Implementing a feature to start the map at the users location with their permission<br/>
--Adding a social tab to discuss the issues around the world with trash and possible events being held<br/>
 -Add markers around your location with different places with trash that could be collected and thrown out<br/>
+_Working On:_<br/>
+-Adding a social tab to discuss the issues around the world with trash and possible events being held<br/>
 -Add a view feature for the user to see a picture/description of the location they are going to.<br/>
 -Add a navigation feature to navigate the users to that location with real-time tracking like google maps(Through google maps API)<br/>
 -Add a profile/settings tabs for the people<br/>
