@@ -1,5 +1,4 @@
 
-
 import 'react-native-gesture-handler';
 import * as React from 'react';
 import { useState, useEffect,useRef } from 'react';
@@ -11,91 +10,84 @@ import MapView from 'react-native-maps';
 import Constants from 'expo-constants'; 
 import * as Location from 'expo-location';
 import { Marker } from "react-native-maps";
+import{ Component } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing'; 
 
+//Get Location Class 
+const { width, height } = Dimensions.get("window");
+const entireScreenHeight = Dimensions.get('window').height;
+const entireScreenWidth = Dimensions.get('window').width;
 
+class getLocation extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mapRegion: null,
+      hasLocationPermissions: false,
+      locationResult: null,
+      location: null,
+      index: 0,
+      markers: global.markers,
+      region: {
+        latitude: 45.52220671242907,
+        longitude: -122.6653281029795,
+        latitudeDelta: 0.02864195044303443,
+        longitudeDelta: 0.020142817690068,
+      },
+      seniors: global.seniors,
+    };
+  }
+  componentDidMount() {
+    this.getLocationAsync();
+  }
+  handleMapRegionChange = (map) => {
+    //console.log(map);
+    this.setState({ mapRegion: map });
+  }
+  async getLocationAsync() {
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== 'granted') {
+      this.setState({
+        locationResult: 'Permission to access location was denied',
+      });
+    } else {
+      this.setState({ hasLocationPermissions: true });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(location)
+    this.setState({ mapRegion: { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.005, longitudeDelta: 0.005 } });
+    this.setState({ locationResult: JSON.stringify(location) });
+    this.setState({ location: { latitude: location.coords.latitude, longitude: location.coords.longitude } });
+
+    // Center the map on the location we just fetched.
+  }
+  render() {
+    return (
+    <MapView
+      ref={map => this.map = map}
+      initialRegion={this.state.mapRegion}
+      style={styles.map}
+      showsUserLocation={true} 
+      followsUserLocation={true} 
+      showsCompass={true} 
+    >
+      <Marker pinColor= 'blue' coordinate= {{latitude:42.2635296,longitude:-87.9809898,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={0} title={'Home'} description={'Where I live'} />
+        <Marker pinColor= 'red' coordinate= {{latitude:42.2272,longitude:-87.9495,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={1} title={'School'} description={'Where I learn'} />
+        <Marker pinColor= 'green' coordinate= {{latitude:42.2139721,longitude:-87.932254,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={2} title={'Half Day Forest Preserve'} description={'Where I run'} />
+    </MapView>
+    )
+  }
+}
 
 //Map screen
 function MapScreens(){
-  const [location, setLocation] = useState({
-    latitude: 51.5078788,
-    longitude: -0.0877321,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005
-  });
-  const [marker, setMarker] = useState({
-    latitude: 42.1635296,
-    longitude: -87.8809898,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005
-  });
-  const [errorMsg, setErrorMsg] = useState(null);
-  let mapRef = useRef(null);
-
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS === 'android' && !Constants.isDevice) {
-        setErrorMsg(
-          'Oops, this will not work on Snack in an Android emulator. Try it on your device!'
-        );
-        return;
-      }
-      let { status } = await Location.requestPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
-
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
-  
-
-  var arr = new Array();
-  arr=text.split(",");
-  var dict={};
-  for(var x=0; x<arr.length;x++){
-    var arrs = new Array();
-    arrs=arr[x].split(":");
-    dict[arrs[0]]=arrs[1]
-  }
-  var lat=parseFloat(dict['"latitude"'])
-  var lng=parseFloat(dict['"longitude"'])
-  var lati=parseFloat(42.2635296)
-  var long=parseFloat(-87.9809898)
-  var truth
-  if(parseFloat(lati.toFixed(5))==parseFloat(lat.toFixed(5))){
-    truth=true
-    lati=parseFloat(lat.toFixed(5))
-  }
-  else{
-    truth =false
-    
-  }
-  if(parseFloat(long.toFixed(5))==parseFloat(lng.toFixed(5))){
-    truth=true
-    long=parseFloat(lng.toFixed(5))
-  }
-  else{
-    truth =false
-    
-  }
-  return (
-    <View style={mapstyles.container}>
-      <MapView style={mapstyles.map} showsUserLocation={true} followsUserLocation={true} showsCompass={true} initialRegion={{latitude:Number(lati),longitude:Number(long),latitudeDelta: 0.005,longitudeDelta: 0.005}}/>
-      <MapView.Marker coordinate={{latitude:42.3635296,longitude:-87.8809898,latitudeDelta: 0.005,longitudeDelta: 0.005}} />
-    </View>
-  );
+  return(
+    new getLocation()
+  )
 }
+MapScreens.prototype = React.Component.prototype
 function MapScreen() {
   return (
       <Stack.Navigator initialRouteName="MapScreens">
@@ -296,18 +288,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#fff',
   }, 
-});
-
-const mapstyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   map: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
 });
+
 
