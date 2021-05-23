@@ -1,11 +1,15 @@
 import{ Component } from 'react';
 import { Marker } from 'react-native-maps';
-import MapView,{ AnimatedRegion, Animated,PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import * as React from 'react';
-import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
-import { useState, useRef } from "react";
+import MapViewDirections from 'react-native-maps-directions';
+
+const GOOGLE_MAPS_APIKEY = 'AIzaSyCA-UjMMoMOx70Fqi8kOZw6ksOSNNlwSIs'
+const origin = {latitude:42.2635296,longitude:-87.9809898};
+const destination = {latitude:42.2272,longitude:-87.9495};
+
 
 const { width, height } = Dimensions.get("window");
 const entireScreenHeight = Dimensions.get('window').height;
@@ -29,7 +33,6 @@ class App extends Component {
         latitudeDelta: 0.02864195044303443,
         longitudeDelta: 0.020142817690068,
       },
-      seniors: global.seniors,
     };
   }
   componentDidMount() {
@@ -58,22 +61,39 @@ class App extends Component {
     // Center the map on the location we just fetched.
   }
   render() {
+    
     return (
     <MapView
       ref={map => this.map = map}
       initialRegion={this.state.mapRegion}
       style={styles.map}
       showsUserLocation={true} 
-      followsUserLocation={true} 
       showsCompass={true} 
+      showsMyLocationButton={true}
+      showsPointsOfInterest={true}
+      moveOnMarkerPress={true}
+      
     >
-      <Marker pinColor= 'blue' coordinate= {{latitude:42.2635296,longitude:-87.9809898,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={0} title={'Home'} description={'Where I live'} />
-        <Marker pinColor= 'red' coordinate= {{latitude:42.2272,longitude:-87.9495,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={1} title={'School'} description={'Where I learn'} />
-        <Marker pinColor= 'green' coordinate= {{latitude:42.2139721,longitude:-87.932254,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={2} title={'Half Day Forest Preserve'} description={'Where I run'} />
+      <Marker pinColor= 'blue' coordinate= {{latitude:42.2635296,longitude:-87.9809898,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={0}  title={'Home'} description={'Where I live'} />
+      <Marker pinColor= 'red' coordinate= {{latitude:42.2272,longitude:-87.9495,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={1} title={'School'} description={'Where I learn'} />
+      <Marker pinColor= 'green' coordinate= {{latitude:42.2139721,longitude:-87.932254,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={2} title={'Half Day Forest Preserve'} description={'Where I run'} />
+      
     </MapView>
     )
   }
 }
+/*
+<MapViewDirections
+        origin={origin}
+        destination={destination}
+        apikey={GOOGLE_MAPS_APIKEY}
+        strokeWidth={3}
+        strokeColor="hotpink"
+        optimizeWaypoints={true}
+      />
+*/
+
+   
 
 export default function play_app(){
   return(
@@ -91,8 +111,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  halfcontainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: (Dimensions.get('window').width)/2,
+    height: Dimensions.get('window').height,
+  },
   map: {
     width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+  halfmap: {
+    width: (Dimensions.get('window').width)/2,
     height: Dimensions.get('window').height,
   },
   paragraph: {
@@ -103,136 +135,6 @@ const styles = StyleSheet.create({
     color: '#34495e',
   },
 });
-/*
-import { Marker } from 'react-native-maps';
-import MapView,{ AnimatedRegion, Animated,PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import * as React from 'react';
-import * as Permissions from 'expo-permissions';
-import * as Location from 'expo-location';
-import { useState, useRef } from "react";
-
-
-export default class App extends React.Component{
-  constructor(props) {
-    super(props);
-    this.state = {
-      location:null,
-      errorMessage: '',
-      markers: global.markers,
-      mapRegion:null,
-      region: {
-        latitude: 45.52220671242907,
-        longitude: -122.6653281029795,
-        latitudeDelta: 0.02864195044303443,
-        longitudeDelta: 0.020142817690068,
-      }
-    }
-    let mapRef = useRef(null);
-    const animateToRegion = () => {
-      mapRef.animateToRegion(region, 1000);
-    }
-  }
-  
-  componentWillUnmount(){
-    this._getLocation();  
-  }
-
-  _getLocation = async () => {
-    const {status} = await location.requestPermissionsAsync()
-
-    if(status != 'granted'){
-      console.log('Permission not granted')
-      this.setState({
-        errorMessage: 'Permission not granted'
-      })
-    }
-
-    const location = await Location.getCurrentPositionAsync();
-
-    this.setState({ mapRegion: { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 } });
-  }
-  render(){
-    return (
-      <View style={styles.container}>
-        <MapView ref={map => this.map = map} initialRegion={this.state.mapRegion} style={styles.map}></MapView>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-  paragraph: {
-    margin: 24,
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#34495e',
-  },
-});
-*/
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-/*
-import { AnimatedRegion, Animated } from 'react-native-maps';
-import { PROVIDER_GOOGLE } from 'react-native-maps'
-import * as Location from 'expo-location';
-import * as React from 'react';
-import MapView from 'react-native-maps';
-import { Marker } from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map} 
-        showsUserLocation={true} 
-        followsUserLocation={true} 
-        showsCompass={true} 
-        provider={PROVIDER_GOOGLE} 
-        initialRegion={{latitude:42.2635296,longitude:-87.9809898,latitudeDelta: 0.005,longitudeDelta: 0.005}}
-      >
-        <Marker pinColor= 'blue' coordinate= {{latitude:42.2635296,longitude:-87.9809898,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={0} title={'Home'} description={'Where I live'} />
-        <Marker pinColor= 'red' coordinate= {{latitude:42.2272,longitude:-87.9495,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={1} title={'School'} description={'Where I learn'} />
-        <Marker pinColor= 'green' coordinate= {{latitude:42.2139721,longitude:-87.932254,latitudeDelta: 0.005,longitudeDelta: 0.005}} key={2} title={'Half Day Forest Preserve'} description={'Where I run'} />
-      </MapView>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
-*/
