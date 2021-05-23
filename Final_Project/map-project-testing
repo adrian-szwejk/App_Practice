@@ -6,7 +6,6 @@ import * as React from 'react';
 import * as Location from 'expo-location';
 import MapViewDirections from 'react-native-maps-directions';
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyCA-UjMMoMOx70Fqi8kOZw6ksOSNNlwSIs'
 const origin = {latitude:42.2635296,longitude:-87.9809898};
 const destination = {latitude:42.2272,longitude:-87.9495};
 
