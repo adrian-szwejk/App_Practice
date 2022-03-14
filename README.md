@@ -1,6 +1,6 @@
 # App_Practice
 I am learning how to program an app that works on all devices
-
+(Created this before learning how to use GitHub properly)
 
 **Practice App:**<br/>
 _Done:_<br/>
